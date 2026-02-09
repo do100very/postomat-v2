@@ -118,14 +118,14 @@ export const DeviceDetail: React.FC<DeviceDetailProps> = ({ device, onBack }) =>
             </div>
             <div className="bg-white p-6 rounded-xl border border-gray-100">
               <h3 className="font-semibold text-lg border-b pb-2 mb-4">Статус ячеек</h3>
-              <div className="flex gap-4 items-end h-32">
+              <div className="flex gap-4 items-end h-44">
                  {[
                    { label: 'Свободно', value: device.cells.filter(c => c.status === CellStatus.FREE).length, color: 'bg-green-500' },
                    { label: 'Занято', value: device.cells.filter(c => c.status === CellStatus.OCCUPIED).length, color: 'bg-slate-400' },
                    { label: 'Ошибка', value: device.cells.filter(c => c.status === CellStatus.FAULT).length, color: 'bg-red-500' }
                  ].map((bar, i) => (
                    <div key={i} className="flex-1 flex flex-col items-center gap-2">
-                     <div className="w-full bg-gray-50 rounded-t-lg relative" style={{ height: '100px' }}>
+                     <div className="w-full bg-gray-50 rounded-t-lg relative" style={{ height: '130px' }}>
                        <div 
                          className={`absolute bottom-0 w-full rounded-t-lg ${bar.color}`}
                          style={{ height: `${(bar.value / device.cells.length) * 100}%` }}

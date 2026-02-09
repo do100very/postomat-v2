@@ -1,0 +1,5 @@
+{
+  "name": "Postomat Control Center",
+  "description": "Professional administrative panel for managing and monitoring parcel locker networks, featuring real-time status tracking, cell capacity monitoring, telemetry visualization, and AI-driven incident diagnostics.",
+  "requestFramePermissions": []
+}

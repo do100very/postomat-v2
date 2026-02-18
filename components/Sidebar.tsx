@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { LayoutDashboard, Package, AlertCircle, FileText, Settings, ShieldCheck, ListChecks } from 'lucide-react';
+import { DashboardIcon, PackageIcon, AlertIcon, SettingsIcon } from './Icons';
 
 interface SidebarProps {
   activePage: string;
@@ -8,25 +8,22 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { id: 'dashboard', label: 'Дашборд', icon: LayoutDashboard },
-  { id: 'devices', label: 'Постоматы', icon: Package },
-  { id: 'incidents', label: 'Инциденты', icon: AlertCircle },
-  { id: 'reports', label: 'Отчеты', icon: FileText },
-  { id: 'audit', label: 'Аудит', icon: ListChecks },
-  { id: 'users', label: 'Пользователи', icon: ShieldCheck },
-  { id: 'config', label: 'Настройки', icon: Settings },
+  { id: 'dashboard', label: 'Дашборд', icon: DashboardIcon },
+  { id: 'devices', label: 'Постоматы', icon: PackageIcon },
+  { id: 'incidents', label: 'Инциденты', icon: AlertIcon },
+  { id: 'config', label: 'Настройки', icon: SettingsIcon },
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage }) => {
   return (
-    <aside className="w-64 bg-slate-900 text-white flex flex-col h-screen sticky top-0">
+    <aside className="sidebar flex flex-col h-screen">
       <div className="p-6">
-        <h1 className="text-xl font-bold flex items-center gap-2">
-          <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">P</div>
-          Postomat Admin
+        <h1 className="text-xl font-bold flex items-center gap-2" style={{ color: 'white' }}>
+          <div style={{ width: '32px', height: '32px', backgroundColor: 'var(--primary)', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>P</div>
+          Admin
         </h1>
       </div>
-      <nav className="flex-1 mt-4">
+      <nav className="flex-col" style={{ flex: 1, marginTop: '1rem' }}>
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activePage === item.id;
@@ -34,9 +31,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage }) =
             <button
               key={item.id}
               onClick={() => setActivePage(item.id)}
-              className={`w-full flex items-center gap-3 px-6 py-3 transition-colors ${
-                isActive ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'
-              }`}
+              className={`nav-item ${isActive ? 'active' : ''}`}
             >
               <Icon size={20} />
               <span className="font-medium">{item.label}</span>
@@ -44,11 +39,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage }) =
           );
         })}
       </nav>
-      <div className="p-6 border-t border-slate-800">
-        <div className="flex items-center gap-3 text-sm text-slate-400">
-          <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold">AD</div>
+      <div className="p-6" style={{ borderTop: '1px solid #1e293b' }}>
+        <div className="flex items-center gap-3 text-sm" style={{ color: '#94a3b8' }}>
+          <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#1e293b', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 'bold' }}>AD</div>
           <div>
-            <p className="text-white font-medium">Administrator</p>
+            <p style={{ color: 'white', fontWeight: 500 }}>Admin</p>
             <p className="text-xs">v2.5.0</p>
           </div>
         </div>

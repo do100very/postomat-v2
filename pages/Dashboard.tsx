@@ -1,18 +1,16 @@
 
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { Package, AlertTriangle, CheckCircle, Activity } from 'lucide-react';
+import { PackageIcon, AlertIcon, UserIcon } from '../components/Icons';
 import { MOCK_DEVICES, MOCK_INCIDENTS } from '../mockData';
 import { DeviceStatus } from '../types';
-
-const COLORS = ['#10B981', '#EF4444', '#F59E0B', '#3B82F6'];
+import { StatusBadge } from '../components/StatusBadge';
 
 export const Dashboard: React.FC = () => {
   const stats = [
-    { label: 'Всего постоматов', value: MOCK_DEVICES.length, icon: Package, color: 'text-blue-600' },
-    { label: 'В сети', value: MOCK_DEVICES.filter(d => d.status === DeviceStatus.ONLINE).length, icon: CheckCircle, color: 'text-green-600' },
-    { label: 'Оффлайн', value: MOCK_DEVICES.filter(d => d.status === DeviceStatus.OFFLINE).length, icon: AlertTriangle, color: 'text-red-600' },
-    { label: 'Инциденты', value: MOCK_INCIDENTS.length, icon: Activity, color: 'text-amber-600' },
+    { label: 'Всего постоматов', value: MOCK_DEVICES.length, icon: PackageIcon, color: '#3b82f6' },
+    { label: 'В сети', value: MOCK_DEVICES.filter(d => d.status === DeviceStatus.ONLINE).length, icon: UserIcon, color: '#10b981' },
+    { label: 'Оффлайн', value: MOCK_DEVICES.filter(d => d.status === DeviceStatus.OFFLINE).length, icon: AlertIcon, color: '#ef4444' },
+    { label: 'Инциденты', value: MOCK_INCIDENTS.length, icon: AlertIcon, color: '#f59e0b' },
   ];
 
   const chartData = MOCK_DEVICES.map(d => ({
@@ -20,24 +18,18 @@ export const Dashboard: React.FC = () => {
     capacity: Math.round((d.cells.filter(c => c.status === 'Occupied').length / d.cells.length) * 100)
   }));
 
-  const statusData = [
-    { name: 'Online', value: MOCK_DEVICES.filter(d => d.status === DeviceStatus.ONLINE).length },
-    { name: 'Offline', value: MOCK_DEVICES.filter(d => d.status === DeviceStatus.OFFLINE).length },
-    { name: 'Service', value: MOCK_DEVICES.filter(d => d.status === DeviceStatus.MAINTENANCE).length },
-  ];
-
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="flex flex-col gap-6">
+      <div className="grid grid-cols-4 gap-4">
         {stats.map((stat, idx) => {
           const Icon = stat.icon;
           return (
-            <div key={idx} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+            <div key={idx} className="bg-white p-6 rounded-xl border shadow-sm flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-500">{stat.label}</p>
-                <p className="text-2xl font-bold mt-1">{stat.value}</p>
+                <p className="text-sm font-medium text-muted">{stat.label}</p>
+                <p className="text-2xl font-bold">{stat.value}</p>
               </div>
-              <div className={`p-3 rounded-lg bg-gray-50 ${stat.color}`}>
+              <div style={{ padding: '12px', borderRadius: '8px', background: '#f8fafc', color: stat.color }}>
                 <Icon size={24} />
               </div>
             </div>
@@ -45,84 +37,67 @@ export const Dashboard: React.FC = () => {
         })}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <h3 className="font-semibold mb-6">Загруженность постоматов (%)</h3>
-          <div className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="name" fontSize={12} />
-                <YAxis fontSize={12} />
-                <Tooltip />
-                <Bar dataKey="capacity" fill="#3B82F6" radius={[4, 4, 0, 0]} barSize={40} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <h3 className="font-semibold mb-6">Статусы сети</h3>
-          <div className="h-[250px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={statusData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {statusData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="mt-4 space-y-2">
-            {statusData.map((s, idx) => (
-              <div key={idx} className="flex justify-between items-center text-sm">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[idx] }} />
-                  <span className="text-gray-600">{s.name}</span>
+      <div className="grid" style={{ gridTemplateColumns: '2fr 1fr', gap: '24px' }}>
+        <div className="bg-white p-6 rounded-xl border shadow-sm">
+          <h3 className="font-semibold" style={{ marginBottom: '24px' }}>Загруженность постоматов (%)</h3>
+          <div style={{ height: '240px', display: 'flex', alignItems: 'flex-end', gap: '16px', paddingBottom: '20px' }}>
+            {chartData.map((data, i) => (
+              <div key={i} className="flex-1 flex flex-col items-center gap-2">
+                <div style={{ width: '100%', backgroundColor: '#f1f5f9', borderRadius: '4px', height: '180px', position: 'relative', overflow: 'hidden' }}>
+                  <div 
+                    className="chart-bar" 
+                    style={{ position: 'absolute', bottom: 0, width: '100%', height: `${data.capacity}%` }}
+                  />
                 </div>
-                <span className="font-semibold">{s.value}</span>
+                <span className="text-xs text-muted" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '60px' }}>{data.name}</span>
               </div>
             ))}
           </div>
         </div>
+
+        <div className="bg-white p-6 rounded-xl border shadow-sm">
+          <h3 className="font-semibold" style={{ marginBottom: '24px' }}>Статусы сети</h3>
+          <div style={{ height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="160" height="160" viewBox="0 0 40 40">
+              <circle cx="20" cy="20" r="15.915" fill="transparent" stroke="#e2e8f0" strokeWidth="3" />
+              <circle cx="20" cy="20" r="15.915" fill="transparent" stroke="var(--primary)" strokeWidth="3" strokeDasharray="65 35" strokeDashoffset="25" />
+            </svg>
+          </div>
+          <div className="flex flex-col gap-2" style={{ marginTop: '1rem' }}>
+             <div className="flex justify-between text-sm">
+                <span className="text-muted flex items-center gap-2"><div style={{width: 8, height: 8, borderRadius: '50%', background: 'var(--primary)'}}/> Online</span>
+                <span className="font-bold">65%</span>
+             </div>
+             <div className="flex justify-between text-sm">
+                <span className="text-muted flex items-center gap-2"><div style={{width: 8, height: 8, borderRadius: '50%', background: '#e2e8f0'}}/> Другое</span>
+                <span className="font-bold">35%</span>
+             </div>
+          </div>
+        </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100">
+      <div className="bg-white rounded-xl border shadow-sm" style={{ overflow: 'hidden' }}>
+        <div className="p-4" style={{ borderBottom: '1px solid var(--border)' }}>
           <h3 className="font-semibold">Активные инциденты</h3>
         </div>
-        <table className="w-full text-left">
-          <thead className="bg-gray-50 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+        <table>
+          <thead>
             <tr>
-              <th className="px-6 py-3">ID</th>
-              <th className="px-6 py-3">Тип</th>
-              <th className="px-6 py-3">Устройство</th>
-              <th className="px-6 py-3">Статус</th>
-              <th className="px-6 py-3">Дата</th>
+              <th>ID</th>
+              <th>Тип</th>
+              <th>Устройство</th>
+              <th>Статус</th>
+              <th>Дата</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody>
             {MOCK_INCIDENTS.map((inc) => (
-              <tr key={inc.id} className="hover:bg-gray-50 transition-colors">
-                <td className="px-6 py-4 font-medium text-blue-600">#{inc.id}</td>
-                <td className="px-6 py-4">{inc.type}</td>
-                <td className="px-6 py-4">{inc.deviceId}</td>
-                <td className="px-6 py-4">
-                   <span className={`px-2 py-1 rounded-full text-xs ${
-                     inc.status === 'New' ? 'bg-blue-50 text-blue-700' : 'bg-amber-50 text-amber-700'
-                   }`}>{inc.status}</span>
-                </td>
-                <td className="px-6 py-4 text-gray-500 text-sm">{new Date(inc.createdAt).toLocaleString()}</td>
+              <tr key={inc.id}>
+                <td className="font-medium" style={{ color: 'var(--primary)' }}>#{inc.id}</td>
+                <td>{inc.type}</td>
+                <td>{inc.deviceId}</td>
+                <td><StatusBadge status={inc.status} /></td>
+                <td className="text-muted text-sm">{new Date(inc.createdAt).toLocaleDateString()}</td>
               </tr>
             ))}
           </tbody>

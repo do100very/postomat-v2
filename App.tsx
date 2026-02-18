@@ -5,7 +5,7 @@ import { Dashboard } from './pages/Dashboard';
 import { DeviceList } from './pages/DeviceList';
 import { DeviceDetail } from './pages/DeviceDetail';
 import { MOCK_DEVICES } from './mockData';
-import { Bell, Search, User } from 'lucide-react';
+import { BellIcon, SearchIcon, UserIcon } from './components/Icons';
 
 const App: React.FC = () => {
   const [activePage, setActivePage] = useState('dashboard');
@@ -24,7 +24,7 @@ const App: React.FC = () => {
         return <DeviceList onSelect={setSelectedDeviceId} />;
       default:
         return (
-          <div className="flex flex-col items-center justify-center h-[60vh] text-gray-400">
+          <div className="flex flex-col items-center justify-center" style={{ height: '60vh', color: 'var(--text-muted)' }}>
             <h2 className="text-xl font-semibold">Раздел "{activePage}" еще не реализован</h2>
             <p className="text-sm">Пожалуйста, выберите "Дашборд" или "Постоматы"</p>
           </div>
@@ -38,60 +38,53 @@ const App: React.FC = () => {
       dashboard: 'Обзор сети',
       devices: 'Реестр постоматов',
       incidents: 'Инциденты и Алерты',
-      reports: 'Аналитические отчеты',
-      audit: 'Журнал аудита',
-      users: 'Управление доступом',
-      config: 'Системные настройки'
+      config: 'Настройки'
     };
     return titles[activePage] || 'Панель управления';
   };
 
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
+    <div className="flex min-h-screen">
       <Sidebar activePage={activePage} setActivePage={(page) => {
         setActivePage(page);
         setSelectedDeviceId(null);
       }} />
       
-      <main className="flex-1 flex flex-col">
-        {/* Header */}
-        <header className="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-8 sticky top-0 z-10">
-          <h2 className="text-lg font-bold text-gray-800">{getPageTitle()}</h2>
+      <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <header className="bg-white flex items-center justify-between" style={{ height: '64px', borderBottom: '1px solid var(--border)', padding: '0 32px', position: 'sticky', top: 0, zIndex: 10 }}>
+          <h2 className="font-bold" style={{ fontSize: '18px' }}>{getPageTitle()}</h2>
           
           <div className="flex items-center gap-6">
-            <div className="relative hidden md:block">
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <div style={{ position: 'relative' }}>
+              <SearchIcon size={18} className="text-muted" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
               <input 
                 type="text" 
-                placeholder="Глобальный поиск..." 
-                className="pl-10 pr-4 py-1.5 bg-gray-50 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-64 transition-all"
+                placeholder="Поиск..." 
+                style={{ width: '240px', padding: '6px 12px 6px 36px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '99px', fontSize: '14px', outline: 'none' }}
               />
             </div>
             
-            <button className="relative p-2 text-gray-500 hover:text-blue-600 transition-colors">
-              <Bell size={20} />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+            <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', position: 'relative' }}>
+              <BellIcon size={20} />
+              <div style={{ position: 'absolute', top: '2px', right: '2px', width: '8px', height: '8px', background: 'red', borderRadius: '50%', border: '2px solid white' }} />
             </button>
             
-            <div className="flex items-center gap-3 pl-6 border-l border-gray-100">
-              <div className="text-right">
+            <div className="flex items-center gap-3" style={{ paddingLeft: '24px', borderLeft: '1px solid var(--border)' }}>
+              <div style={{ textAlign: 'right' }}>
                 <p className="text-sm font-bold">Артем А.</p>
-                <p className="text-[10px] text-gray-400 font-bold uppercase">Administrator</p>
+                <p className="text-xs text-muted font-bold" style={{ fontSize: '9px' }}>ADMINISTRATOR</p>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-200">
-                <User size={20} />
+              <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'linear-gradient(45deg, var(--primary), #4f46e5)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', boxShadow: '0 4px 12px rgba(37, 99, 235, 0.2)' }}>
+                <UserIcon size={20} />
               </div>
             </div>
           </div>
         </header>
 
-        {/* Content */}
-        <div className="p-8 max-w-7xl mx-auto w-full">
+        <div className="p-8" style={{ maxWidth: '1280px', width: '100%', margin: '0 auto' }}>
           {renderContent()}
         </div>
       </main>
-
-      {/* Toast notifications container could be added here */}
     </div>
   );
 };

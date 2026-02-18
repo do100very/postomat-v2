@@ -75,7 +75,7 @@ const App: React.FC = () => {
             
             <div className="flex items-center gap-3 pl-6 border-l border-gray-100">
               <div className="text-right">
-                <p className="text-sm font-bold">Дмитрий А.</p>
+                <p className="text-sm font-bold">Артем А.</p>
                 <p className="text-[10px] text-gray-400 font-bold uppercase">Administrator</p>
               </div>
               <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-200">

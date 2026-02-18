@@ -13,7 +13,7 @@ const generateCells = (count: number, chilled: boolean): any[] => {
 export const MOCK_DEVICES: Postomat[] = [
   {
     id: 'P-1001',
-    name: 'Downtown Central',
+    name: 'Проспект ленина 1',
     address: '123 Main St, Moscow',
     coordinates: [55.7558, 37.6173],
     status: DeviceStatus.ONLINE,
@@ -29,7 +29,7 @@ export const MOCK_DEVICES: Postomat[] = [
   },
   {
     id: 'P-1002',
-    name: 'Nordic Mall',
+    name: 'ТЦ АШАН',
     address: '45 Retail Ave, St. Petersburg',
     coordinates: [59.9343, 30.3351],
     status: DeviceStatus.OFFLINE,
@@ -45,7 +45,7 @@ export const MOCK_DEVICES: Postomat[] = [
   },
   {
     id: 'P-1003',
-    name: 'Airport T1',
+    name: 'Аэропорт Шереметьево Т1',
     address: 'Arrivals Hall, Sheremetyevo',
     coordinates: [55.9726, 37.4146],
     status: DeviceStatus.MAINTENANCE,
@@ -64,7 +64,7 @@ export const MOCK_DEVICES: Postomat[] = [
 export const MOCK_INCIDENTS: Incident[] = [
   {
     id: 'INC-7721',
-    type: 'Door Sensor Fault',
+    type: 'Ошибка датчика двери',
     priority: IncidentPriority.HIGH,
     deviceId: 'P-1001',
     cellId: 'C5',
@@ -74,7 +74,7 @@ export const MOCK_INCIDENTS: Incident[] = [
   },
   {
     id: 'INC-7722',
-    type: 'Heartbeat Timeout',
+    type: 'Превышен лимит времени открытого замка',
     priority: IncidentPriority.CRITICAL,
     deviceId: 'P-1002',
     status: IncidentStatus.IN_PROGRESS,

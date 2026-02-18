@@ -1,21 +1,25 @@
 
-import { GoogleGenAI } from "@google/genai";
-
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+/**
+ * Сервис диагностики (заглушка)
+ * Позволяет приложению работать без установки @google/genai и без API ключа.
+ */
 
 export const getDiagnosticSummary = async (deviceLogs: string, telemetry: string) => {
+  // Имитируем задержку сети
+  await new Promise(resolve => setTimeout(resolve, 1500));
+  
   try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
-      contents: `Analyze the following postomat (parcel locker) logs and telemetry. 
-      Identify potential hardware issues or maintenance needs. 
-      Summarize in 3 bullet points in Russian.
-      Logs: ${deviceLogs}
-      Telemetry: ${telemetry}`,
-    });
-    return response.text;
+    // Вместо реального вызова к ИИ возвращаем заранее подготовленные ответы
+    const mockInsights = [
+      "• Рекомендуется проверка датчика открытия двери в ячейке C5.\n• Температурный режим в норме (4.2C), отклонений не выявлено.\n• Уровень сигнала RSSI низкий, возможны перебои со связью.",
+      "• Выявлены аномальные попытки открытия без авторизации.\n• Требуется обновление прошивки до версии v2.5.1 для исправления ошибок логирования.\n• Система питания стабильна.",
+      "• Критических ошибок в аппаратной части не обнаружено.\n• Заполненность ячеек близка к 90%, рекомендуется инкассация.\n• Проверка сенсоров прошла успешно."
+    ];
+    
+    // Возвращаем случайный инсайт из списка
+    return mockInsights[Math.floor(Math.random() * mockInsights.length)];
   } catch (error) {
-    console.error("AI Insight Error:", error);
-    return "Не удалось получить AI-аналитику.";
+    console.error("Diagnostic Error:", error);
+    return "Не удалось получить аналитику.";
   }
 };

@@ -8,7 +8,6 @@ interface IconProps {
   style?: React.CSSProperties;
 }
 
-// Added style and color prop handling to all icons to fix TS errors in App.tsx and pages
 export const DashboardIcon = ({ size = 20, className, style, color }: IconProps) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color || "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
     <rect width="7" height="9" x="3" y="3" rx="1" /><rect width="7" height="5" x="14" y="3" rx="1" /><rect width="7" height="9" x="14" y="12" rx="1" /><rect width="7" height="5" x="3" y="16" rx="1" />
@@ -45,6 +44,18 @@ export const UserIcon = ({ size = 20, className, style, color }: IconProps) => (
   </svg>
 );
 
+export const LockIcon = ({ size = 20, className, style, color }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color || "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+    <rect width="18" height="11" x="3" y="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
+  </svg>
+);
+
+export const LogoutIcon = ({ size = 20, className, style, color }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color || "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" x2="9" y1="12" y2="12" />
+  </svg>
+);
+
 export const SearchIcon = ({ size = 20, className, style, color }: IconProps) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color || "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
     <circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />
@@ -62,3 +73,16 @@ export const ArrowLeftIcon = ({ size = 20, className, style, color }: IconProps)
     <path d="m12 19-7-7 7-7" /><path d="M19 12H5" />
   </svg>
 );
+
+export const MenuIcon = ({ size = 20, className, style, color }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color || "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+    <line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" />
+  </svg>
+);
+
+export const XIcon = ({ size = 20, className, style, color }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color || "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>
+    <path d="M18 6 6 18" /><path d="m6 6 12 12" />
+  </svg>
+);
+

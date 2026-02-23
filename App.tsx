@@ -4,12 +4,24 @@ import { Sidebar } from './components/Sidebar';
 import { Dashboard } from './pages/Dashboard';
 import { DeviceList } from './pages/DeviceList';
 import { DeviceDetail } from './pages/DeviceDetail';
+import { LoginPage } from './pages/LoginPage';
 import { MOCK_DEVICES } from './mockData';
-import { BellIcon, SearchIcon, UserIcon } from './components/Icons';
+import { BellIcon, SearchIcon, UserIcon, LogoutIcon, MenuIcon, XIcon } from './components/Icons';
 
 const App: React.FC = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activePage, setActivePage] = useState('dashboard');
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const handleLogin = () => setIsAuthenticated(true);
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setActivePage('dashboard');
+    setSelectedDeviceId(null);
+  };
+
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   const renderContent = () => {
     if (selectedDeviceId) {
@@ -24,7 +36,7 @@ const App: React.FC = () => {
         return <DeviceList onSelect={setSelectedDeviceId} />;
       default:
         return (
-          <div className="flex flex-col items-center justify-center" style={{ height: '60vh', color: 'var(--text-muted)' }}>
+          <div className="flex flex-col items-center justify-center h-[60vh] text-text-muted">
             <h2 className="text-xl font-semibold">Раздел "{activePage}" еще не реализован</h2>
             <p className="text-sm">Пожалуйста, выберите "Дашборд" или "Постоматы"</p>
           </div>
@@ -43,45 +55,84 @@ const App: React.FC = () => {
     return titles[activePage] || 'Панель управления';
   };
 
+  if (!isAuthenticated) {
+    return <LoginPage onLogin={handleLogin} />;
+  }
+
   return (
-    <div className="flex min-h-screen">
-      <Sidebar activePage={activePage} setActivePage={(page) => {
-        setActivePage(page);
-        setSelectedDeviceId(null);
-      }} />
+    <div className="flex min-h-screen relative overflow-x-hidden">
+      {/* Overlay for mobile sidebar */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      <div className={`
+        fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 lg:relative lg:translate-x-0
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
+        <Sidebar 
+          activePage={activePage} 
+          setActivePage={(page) => {
+            setActivePage(page);
+            setSelectedDeviceId(null);
+            setIsSidebarOpen(false);
+          }} 
+          onClose={() => setIsSidebarOpen(false)}
+        />
+      </div>
       
-      <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <header className="bg-white flex items-center justify-between" style={{ height: '64px', borderBottom: '1px solid var(--border)', padding: '0 32px', position: 'sticky', top: 0, zIndex: 10 }}>
-          <h2 className="font-bold" style={{ fontSize: '18px' }}>{getPageTitle()}</h2>
+      <main className="flex-1 flex flex-col min-w-0">
+        <header className="bg-white flex items-center justify-between h-16 border-b border-border px-4 lg:px-8 sticky top-0 z-30">
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={toggleSidebar}
+              className="p-2 lg:hidden text-text-muted hover:bg-bg-main rounded-lg"
+            >
+              <MenuIcon size={24} />
+            </button>
+            <h2 className="font-bold text-base lg:text-lg truncate">{getPageTitle()}</h2>
+          </div>
           
-          <div className="flex items-center gap-6">
-            <div style={{ position: 'relative' }}>
-              <SearchIcon size={18} className="text-muted" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
+          <div className="flex items-center gap-2 lg:gap-6">
+            <div className="relative hidden md:block">
+              <SearchIcon size={18} className="text-text-muted absolute left-3 top-1/2 -translate-y-1/2" />
               <input 
                 type="text" 
                 placeholder="Поиск..." 
-                style={{ width: '240px', padding: '6px 12px 6px 36px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '99px', fontSize: '14px', outline: 'none' }}
+                className="w-48 lg:w-60 pl-10 pr-4 py-1.5 bg-[#f8fafc] border border-[#e2e8f0] rounded-full text-sm outline-none focus:border-primary transition-colors"
               />
             </div>
             
-            <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', position: 'relative' }}>
+            <button className="p-2 text-text-muted relative hover:bg-bg-main rounded-lg transition-colors">
               <BellIcon size={20} />
-              <div style={{ position: 'absolute', top: '2px', right: '2px', width: '8px', height: '8px', background: 'red', borderRadius: '50%', border: '2px solid white' }} />
+              <div className="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
             </button>
             
-            <div className="flex items-center gap-3" style={{ paddingLeft: '24px', borderLeft: '1px solid var(--border)' }}>
-              <div style={{ textAlign: 'right' }}>
-                <p className="text-sm font-bold">Артем А.</p>
-                <p className="text-xs text-muted font-bold" style={{ fontSize: '9px' }}>ADMINISTRATOR</p>
+            <div className="flex items-center gap-2 lg:gap-3 pl-2 lg:pl-6 border-l border-border">
+              <div className="hidden sm:block text-right">
+                <p className="text-sm font-bold leading-tight">Артем А.</p>
+                <p className="text-[9px] text-text-muted font-bold uppercase tracking-wider">ADMINISTRATOR</p>
               </div>
-              <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'linear-gradient(45deg, var(--primary), #4f46e5)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', boxShadow: '0 4px 12px rgba(37, 99, 235, 0.2)' }}>
-                <UserIcon size={20} />
+              <div className="flex items-center gap-1 lg:gap-2">
+                <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-lg bg-gradient-to-br from-primary to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-primary/20">
+                  <UserIcon size={18} />
+                </div>
+                <button 
+                  onClick={handleLogout}
+                  title="Выйти"
+                  className="p-2 text-text-muted hover:text-red-500 transition-colors"
+                >
+                  <LogoutIcon size={18} />
+                </button>
               </div>
             </div>
           </div>
         </header>
 
-        <div className="p-8" style={{ maxWidth: '1280px', width: '100%', margin: '0 auto' }}>
+        <div className="p-4 lg:p-8 max-w-7xl w-full mx-auto">
           {renderContent()}
         </div>
       </main>
@@ -90,3 +141,4 @@ const App: React.FC = () => {
 };
 
 export default App;
+

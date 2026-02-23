@@ -1,10 +1,11 @@
 
 import React from 'react';
-import { DashboardIcon, PackageIcon, AlertIcon, SettingsIcon } from './Icons';
+import { DashboardIcon, PackageIcon, AlertIcon, SettingsIcon, XIcon } from './Icons';
 
 interface SidebarProps {
   activePage: string;
   setActivePage: (page: string) => void;
+  onClose?: () => void;
 }
 
 const navItems = [
@@ -14,14 +15,22 @@ const navItems = [
   { id: 'config', label: 'Настройки', icon: SettingsIcon },
 ];
 
-export const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage, onClose }) => {
   return (
     <aside className="sidebar flex flex-col h-screen">
-      <div className="p-6">
+      <div className="p-6 flex items-center justify-between">
         <h1 className="text-xl font-bold flex items-center gap-2" style={{ color: 'white' }}>
           <div style={{ width: '32px', height: '32px', backgroundColor: 'var(--primary)', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>P</div>
           Admin
         </h1>
+        {onClose && (
+          <button 
+            onClick={onClose}
+            className="lg:hidden p-2 text-[#94a3b8] hover:text-white transition-colors"
+          >
+            <XIcon size={20} />
+          </button>
+        )}
       </div>
       <nav className="flex-col" style={{ flex: 1, marginTop: '1rem' }}>
         {navItems.map((item) => {
@@ -51,3 +60,4 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage, setActivePage }) =
     </aside>
   );
 };
+

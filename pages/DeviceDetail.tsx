@@ -26,26 +26,26 @@ export const DeviceDetail: React.FC<DeviceDetailProps> = ({ device, onBack }) =>
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <button 
             onClick={onBack}
-            style={{ padding: '8px', background: 'white', borderRadius: '8px', border: '1px solid var(--border)', cursor: 'pointer' }}
+            className="p-2 bg-white rounded-lg border border-border hover:bg-bg-main transition-colors"
           >
             <ArrowLeftIcon size={20} />
           </button>
-          <div>
-            <div className="flex items-center gap-3">
-              <h2 className="text-2xl font-bold">{device.name}</h2>
+          <div className="min-w-0">
+            <div className="flex items-center gap-3 flex-wrap">
+              <h2 className="text-xl lg:text-2xl font-bold truncate">{device.name}</h2>
               <StatusBadge status={device.status} />
             </div>
-            <p className="text-muted text-sm">{device.address}</p>
+            <p className="text-text-muted text-sm truncate">{device.address}</p>
           </div>
         </div>
         <button 
           onClick={handleAiDiagnostic}
           disabled={loadingAi}
-          className="btn-primary flex items-center gap-2"
+          className="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto"
           style={{ background: '#9333ea', opacity: loadingAi ? 0.5 : 1 }}
         >
           <SparklesIcon size={18} />
@@ -54,62 +54,58 @@ export const DeviceDetail: React.FC<DeviceDetailProps> = ({ device, onBack }) =>
       </div>
 
       {aiSummary && (
-        <div style={{ background: '#faf5ff', border: '1px solid #e9d5ff', borderRadius: '12px', padding: '16px', display: 'flex', gap: '16px' }}>
-          <div style={{ padding: '8px', background: '#f3e8ff', borderRadius: '50%', height: 'fit-content' }}>
+        <div className="bg-[#faf5ff] border border-[#e9d5ff] rounded-xl p-4 flex gap-4">
+          <div className="p-2 bg-[#f3e8ff] rounded-full h-fit shrink-0">
             <SparklesIcon style={{ color: '#9333ea' }} size={20} />
           </div>
-          <div>
-            <h4 className="font-semibold" style={{ color: '#581c87', marginBottom: '4px' }}>AI Инсайт:</h4>
-            <div className="text-sm" style={{ color: '#6b21a8', whiteSpace: 'pre-line' }}>{aiSummary}</div>
-            <button onClick={() => setAiSummary(null)} style={{ marginTop: '8px', background: 'none', border: 'none', color: '#9333ea', fontWeight: 'bold', fontSize: '11px', cursor: 'pointer' }}>Закрыть</button>
+          <div className="min-w-0">
+            <h4 className="font-semibold text-[#581c87] mb-1">AI Инсайт:</h4>
+            <div className="text-sm text-[#6b21a8] whitespace-pre-line leading-relaxed">{aiSummary}</div>
+            <button onClick={() => setAiSummary(null)} className="mt-2 text-[#9333ea] font-bold text-[11px] hover:underline">Закрыть</button>
           </div>
         </div>
       )}
 
-      <div className="flex" style={{ borderBottom: '1px solid var(--border)' }}>
+      <div className="flex border-b border-border overflow-x-auto scrollbar-hide">
         {['overview', 'cells'].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab as any)}
-            className="font-medium"
-            style={{ 
-              padding: '16px 24px', 
-              fontSize: '14px',
-              background: 'none',
-              border: 'none',
-              borderBottom: activeTab === tab ? '2px solid var(--primary)' : '2px solid transparent',
-              color: activeTab === tab ? 'var(--primary)' : 'var(--text-muted)',
-              cursor: 'pointer'
-            }}
+            className={`font-medium px-6 py-4 text-sm border-b-2 transition-colors whitespace-nowrap ${
+              activeTab === tab ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-main'
+            }`}
           >
             {tab === 'overview' ? 'Обзор' : 'Ячейки'}
           </button>
         ))}
       </div>
 
-      <div style={{ minHeight: '400px' }}>
+      <div className="min-h-[400px]">
         {activeTab === 'overview' && (
-          <div className="grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-white p-6 rounded-xl border shadow-sm">
-              <h3 className="font-semibold" style={{ marginBottom: '16px', paddingBottom: '8px', borderBottom: '1px solid var(--border)' }}>Системная информация</h3>
-              <div className="flex flex-col gap-3 text-sm">
-                <div className="flex justify-between"><span className="text-muted">ID Устройства:</span><span style={{ fontFamily: 'monospace' }}>{device.id}</span></div>
-                <div className="flex justify-between"><span className="text-muted">Версия ПО:</span><span>{device.config.softwareVersion}</span></div>
-                <div className="flex justify-between"><span className="text-muted">Координаты:</span><span>{device.coordinates.join(', ')}</span></div>
+              <h3 className="font-semibold mb-4 pb-2 border-b border-border">Системная информация</h3>
+              <div className="flex flex-col gap-4 text-sm">
+                <div className="flex justify-between gap-4"><span className="text-text-muted">ID Устройства:</span><span className="font-mono break-all text-right">{device.id}</span></div>
+                <div className="flex justify-between gap-4"><span className="text-text-muted">Версия ПО:</span><span className="text-right">{device.config.softwareVersion}</span></div>
+                <div className="flex justify-between gap-4"><span className="text-text-muted">Координаты:</span><span className="text-right">{device.coordinates.join(', ')}</span></div>
               </div>
             </div>
             <div className="bg-white p-6 rounded-xl border shadow-sm">
-              <h3 className="font-semibold" style={{ marginBottom: '16px', paddingBottom: '8px', borderBottom: '1px solid var(--border)' }}>Статистика ячеек</h3>
-              <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-end', height: '140px' }}>
+              <h3 className="font-semibold mb-4 pb-2 border-b border-border">Статистика ячеек</h3>
+              <div className="flex gap-4 items-end h-32">
                 {[
                   { label: 'Свободно', val: device.cells.filter(c => c.status === CellStatus.FREE).length, color: 'var(--status-online)' },
                   { label: 'Занято', val: device.cells.filter(c => c.status === CellStatus.OCCUPIED).length, color: 'var(--text-muted)' }
                 ].map((s, i) => (
-                  <div key={i} className="flex-1 flex flex-col items-center gap-2">
-                    <div style={{ width: '100%', background: '#f8fafc', borderRadius: '4px', height: '100px', position: 'relative' }}>
-                       <div style={{ position: 'absolute', bottom: 0, width: '100%', height: `${(s.val/device.cells.length)*100}%`, background: s.color, borderRadius: '4px' }} />
+                  <div key={i} className="flex-1 flex flex-col items-center gap-2 h-full">
+                    <div className="w-full bg-bg-main rounded h-full relative overflow-hidden">
+                       <div className="absolute bottom-0 w-full rounded-t transition-all duration-500" style={{ height: `${(s.val/device.cells.length)*100}%`, background: s.color }} />
                     </div>
-                    <span className="text-xs font-bold">{s.val}</span>
+                    <div className="flex flex-col items-center">
+                      <span className="text-xs font-bold">{s.val}</span>
+                      <span className="text-[10px] text-text-muted uppercase">{s.label}</span>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -118,24 +114,19 @@ export const DeviceDetail: React.FC<DeviceDetailProps> = ({ device, onBack }) =>
         )}
 
         {activeTab === 'cells' && (
-          <div className="bg-white p-6 rounded-xl border shadow-sm">
-             <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))', gap: '12px' }}>
+          <div className="bg-white p-4 lg:p-6 rounded-xl border shadow-sm">
+             <div className="grid grid-cols-[repeat(auto-fill,minmax(60px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(80px,1fr))] gap-3">
                 {device.cells.map((cell) => (
                   <div 
                     key={cell.id} 
-                    style={{ 
-                      padding: '12px', 
-                      borderRadius: '8px', 
-                      border: '1px solid var(--border)', 
-                      display: 'flex', 
-                      flexDirection: 'column', 
-                      alignItems: 'center', 
-                      gap: '4px',
-                      background: cell.status === CellStatus.FREE ? '#f0fdf4' : '#f8fafc'
-                    }}
+                    className={`p-3 rounded-lg border border-border flex flex-col items-center gap-2 transition-colors ${
+                      cell.status === CellStatus.FREE ? 'bg-green-50/50 border-green-100' : 'bg-bg-main'
+                    }`}
                   >
-                    <span style={{ fontSize: '9px', fontWeight: 'bold', color: '#94a3b8' }}>{cell.id}</span>
-                    <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: cell.status === CellStatus.FREE ? 'var(--status-online)' : '#cbd5e1' }} />
+                    <span className="text-[10px] font-bold text-text-muted">{cell.id}</span>
+                    <div className={`w-2.5 h-2.5 rounded-full ${
+                      cell.status === CellStatus.FREE ? 'bg-status-online shadow-[0_0_8px_rgba(16,185,129,0.4)]' : 'bg-slate-300'
+                    }`} />
                   </div>
                 ))}
              </div>
@@ -143,5 +134,6 @@ export const DeviceDetail: React.FC<DeviceDetailProps> = ({ device, onBack }) =>
         )}
       </div>
     </div>
+
   );
 };

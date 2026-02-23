@@ -8,7 +8,7 @@ interface StatusBadgeProps {
 
 export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
   const getClassName = () => {
-    const s = status.toLowerCase();
+    const s = String(status).toLowerCase();
     if (['online', 'free', 'resolved', 'closed'].includes(s)) return 'badge-online';
     if (['offline', 'fault', 'critical', 'high'].includes(s)) return 'badge-offline';
     if (['maintenance', 'disabled', 'medium', 'inprogress'].includes(s)) return 'badge-maintenance';
@@ -17,7 +17,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
 
   return (
     <span className={`badge ${getClassName()}`}>
-      {status}
+      {String(status)}
     </span>
   );
 };

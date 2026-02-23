@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  
+  --color-primary: #2563eb;
+  --color-primary-dark: #1d4ed8;
+  --color-bg-main: #f8fafc;
+  --color-bg-surface: #ffffff;
+  --color-text-main: #0f172a;
+  --color-text-muted: #64748b;
+  --color-border: #e2e8f0;
+  
+  --color-status-online: #10b981;
+  --color-status-offline: #ef4444;
+  --color-status-warning: #f59e0b;
+  --color-status-info: #3b82f6;
+}
+
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --bg-main: #f8fafc;
+    --bg-surface: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --radius: 12px;
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    
+    --status-online: #10b981;
+    --status-offline: #ef4444;
+    --status-warning: #f59e0b;
+    --status-info: #3b82f6;
+}
+
+@layer base {
+  * { @apply border-border; }
+  body { 
+    @apply bg-bg-main text-text-main antialiased;
+    font-family: var(--font-sans);
+  }
+}
+
+@layer components {
+  .sidebar {
+    @apply w-[260px] bg-[#0f172a] text-white shrink-0 sticky top-0 h-screen transition-transform duration-300;
+  }
+  
+  .nav-item {
+    @apply flex items-center gap-3 px-6 py-3 text-[#94a3b8] transition-all duration-200 bg-transparent border-none w-full text-left cursor-pointer hover:text-white hover:bg-[#1e293b];
+  }
+  
+  .nav-item.active {
+    @apply bg-primary text-white;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-white px-4 py-2 rounded-lg border-none font-medium cursor-pointer hover:bg-primary-dark disabled:opacity-60 disabled:cursor-not-allowed transition-colors;
+  }
+  
+  .badge {
+    @apply px-2 py-0.5 rounded-full text-[11px] font-semibold capitalize;
+  }
+  
+  .badge-online { @apply bg-[#dcfce7] text-[#15803d]; }
+  .badge-offline { @apply bg-[#fee2e2] text-[#b91c1c]; }
+  .badge-maintenance { @apply bg-[#fef3c7] text-[#b45309]; }
+
+  table { @apply w-full border-collapse; }
+  th { @apply text-left px-6 py-3 bg-[#f1f5f9] text-text-muted text-[11px] uppercase tracking-wider; }
+  td { @apply px-6 py-4 border-b border-border; }
+  tr:hover td { @apply bg-[#f8fafc]; }
+}

@@ -1,9 +1,10 @@
 
 import React, { useState } from 'react';
-import { ArrowLeftIcon, SparklesIcon } from '../components/Icons';
+import { ArrowLeftIcon, SparklesIcon, RefreshCwIcon } from '../components/Icons';
 import { Postomat, CellStatus } from '../types';
 import { StatusBadge } from '../components/StatusBadge';
 import { getDiagnosticSummary } from '../geminiService';
+import { rebootDevice } from '../apiService';
 
 interface DeviceDetailProps {
   device: Postomat;
@@ -14,6 +15,20 @@ export const DeviceDetail: React.FC<DeviceDetailProps> = ({ device, onBack }) =>
   const [activeTab, setActiveTab] = useState<'overview' | 'cells'>('overview');
   const [aiSummary, setAiSummary] = useState<string | null>(null);
   const [loadingAi, setLoadingAi] = useState(false);
+  const [rebooting, setRebooting] = useState(false);
+
+  const handleReboot = async () => {
+    if (!confirm('Вы уверены, что хотите перезагрузить устройство?')) return;
+    setRebooting(true);
+    try {
+      await rebootDevice(device.id);
+      alert('Команда на перезагрузку отправлена');
+    } catch (error) {
+      alert('Ошибка при отправке команды');
+    } finally {
+      setRebooting(false);
+    }
+  };
 
   const handleAiDiagnostic = async () => {
     setLoadingAi(true);
@@ -42,15 +57,26 @@ export const DeviceDetail: React.FC<DeviceDetailProps> = ({ device, onBack }) =>
             <p className="text-text-muted text-sm truncate">{device.address}</p>
           </div>
         </div>
-        <button 
-          onClick={handleAiDiagnostic}
-          disabled={loadingAi}
-          className="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto"
-          style={{ background: '#9333ea', opacity: loadingAi ? 0.5 : 1 }}
-        >
-          <SparklesIcon size={18} />
-          {loadingAi ? 'Анализ...' : 'AI Диагностика'}
-        </button>
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <button 
+            onClick={handleReboot}
+            disabled={rebooting}
+            className="btn-primary flex items-center justify-center gap-2 flex-1 sm:flex-none"
+            style={{ background: '#4b5563', opacity: rebooting ? 0.5 : 1 }}
+          >
+            <RefreshCwIcon size={18} className={rebooting ? 'animate-spin' : ''} />
+            {rebooting ? 'Перезагрузка...' : 'Перезагрузить'}
+          </button>
+          <button 
+            onClick={handleAiDiagnostic}
+            disabled={loadingAi}
+            className="btn-primary flex items-center justify-center gap-2 flex-1 sm:flex-none"
+            style={{ background: '#9333ea', opacity: loadingAi ? 0.5 : 1 }}
+          >
+            <SparklesIcon size={18} />
+            {loadingAi ? 'Анализ...' : 'AI Диагностика'}
+          </button>
+        </div>
       </div>
 
       {aiSummary && (

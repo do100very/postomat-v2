@@ -1,17 +1,18 @@
 
 import React, { useState } from 'react';
 import { SearchIcon } from '../components/Icons';
-import { MOCK_DEVICES } from '../mockData';
+import { Postomat } from '../types';
 import { StatusBadge } from '../components/StatusBadge';
 
 interface DeviceListProps {
+  devices: Postomat[];
   onSelect: (id: string) => void;
 }
 
-export const DeviceList: React.FC<DeviceListProps> = ({ onSelect }) => {
+export const DeviceList: React.FC<DeviceListProps> = ({ devices, onSelect }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filtered = MOCK_DEVICES.filter(d => 
+  const filtered = devices.filter(d => 
     d.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
     d.id.toLowerCase().includes(searchTerm.toLowerCase())
   );

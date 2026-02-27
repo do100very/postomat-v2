@@ -1,18 +1,67 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Dashboard } from './pages/Dashboard';
 import { DeviceList } from './pages/DeviceList';
 import { DeviceDetail } from './pages/DeviceDetail';
 import { LoginPage } from './pages/LoginPage';
-import { MOCK_DEVICES } from './mockData';
 import { BellIcon, SearchIcon, UserIcon, LogoutIcon, MenuIcon, XIcon } from './components/Icons';
+import { fetchDevices, fetchIncidents, setupWebSocket } from './apiService';
+import { Postomat, Incident } from './types';
 
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activePage, setActivePage] = useState('dashboard');
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
+  const [devices, setDevices] = useState<Postomat[]>([]);
+  const [incidents, setIncidents] = useState<Incident[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const loadInitialData = async () => {
+        try {
+          const [devicesData, incidentsData] = await Promise.all([
+            fetchDevices(),
+            fetchIncidents()
+          ]);
+          setDevices(devicesData);
+          setIncidents(incidentsData);
+        } catch (error) {
+          console.error('Error loading data:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      loadInitialData();
+
+      const ws = setupWebSocket((data) => {
+        if (data.type === 'CELL_UPDATED') {
+          setDevices(prev => prev.map(d => {
+            if (d.id === data.deviceId) {
+              return {
+                ...d,
+                cells: d.cells.map(c => c.id === data.cellId ? { ...c, status: data.status } : c)
+              };
+            }
+            return d;
+          }));
+        } else if (data.type === 'DEVICE_UPDATED') {
+          setDevices(prev => prev.map(d => {
+            if (d.id === data.deviceId) {
+              return { ...d, status: data.status };
+            }
+            return d;
+          }));
+        }
+      });
+
+      return () => ws.close();
+    }
+  }, [isAuthenticated]);
 
   const handleLogin = () => setIsAuthenticated(true);
   const handleLogout = () => {
@@ -24,16 +73,24 @@ const App: React.FC = () => {
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   const renderContent = () => {
+    if (loading && isAuthenticated) {
+      return (
+        <div className="flex items-center justify-center h-[60vh]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      );
+    }
+
     if (selectedDeviceId) {
-      const device = MOCK_DEVICES.find(d => d.id === selectedDeviceId);
+      const device = devices.find(d => d.id === selectedDeviceId);
       if (device) return <DeviceDetail device={device} onBack={() => setSelectedDeviceId(null)} />;
     }
 
     switch (activePage) {
       case 'dashboard':
-        return <Dashboard />;
+        return <Dashboard devices={devices} incidents={incidents} />;
       case 'devices':
-        return <DeviceList onSelect={setSelectedDeviceId} />;
+        return <DeviceList devices={devices} onSelect={setSelectedDeviceId} />;
       default:
         return (
           <div className="flex flex-col items-center justify-center h-[60vh] text-text-muted">

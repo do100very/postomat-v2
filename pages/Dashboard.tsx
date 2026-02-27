@@ -1,19 +1,23 @@
 
 import React from 'react';
 import { PackageIcon, AlertIcon, UserIcon } from '../components/Icons';
-import { MOCK_DEVICES, MOCK_INCIDENTS } from '../mockData';
-import { DeviceStatus } from '../types';
+import { Postomat, Incident, DeviceStatus } from '../types';
 import { StatusBadge } from '../components/StatusBadge';
 
-export const Dashboard: React.FC = () => {
+interface DashboardProps {
+  devices: Postomat[];
+  incidents: Incident[];
+}
+
+export const Dashboard: React.FC<DashboardProps> = ({ devices, incidents }) => {
   const stats = [
-    { label: 'Всего постоматов', value: MOCK_DEVICES.length, icon: PackageIcon, color: '#3b82f6' },
-    { label: 'В сети', value: MOCK_DEVICES.filter(d => d.status === DeviceStatus.ONLINE).length, icon: UserIcon, color: '#10b981' },
-    { label: 'Оффлайн', value: MOCK_DEVICES.filter(d => d.status === DeviceStatus.OFFLINE).length, icon: AlertIcon, color: '#ef4444' },
-    { label: 'Инциденты', value: MOCK_INCIDENTS.length, icon: AlertIcon, color: '#f59e0b' },
+    { label: 'Всего постоматов', value: devices.length, icon: PackageIcon, color: '#3b82f6' },
+    { label: 'В сети', value: devices.filter(d => d.status === DeviceStatus.ONLINE).length, icon: UserIcon, color: '#10b981' },
+    { label: 'Оффлайн', value: devices.filter(d => d.status === DeviceStatus.OFFLINE).length, icon: AlertIcon, color: '#ef4444' },
+    { label: 'Инциденты', value: incidents.length, icon: AlertIcon, color: '#f59e0b' },
   ];
 
-  const chartData = MOCK_DEVICES.map(d => ({
+  const chartData = devices.map(d => ({
     name: d.name,
     capacity: Math.round((d.cells.filter(c => c.status === 'Occupied').length / d.cells.length) * 100)
   }));
@@ -99,7 +103,7 @@ export const Dashboard: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {MOCK_INCIDENTS.map((inc) => (
+              {incidents.map((inc) => (
                 <tr key={inc.id}>
                   <td className="font-medium text-primary">#{inc.id}</td>
                   <td>{inc.type}</td>
